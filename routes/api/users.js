@@ -18,7 +18,7 @@ const User = require('../../models/User');
 // @access Public
 router.post('/register', (req, res) => {
   //Form validation
-  const { errors, isValid } = validateRegisterInput(req, body);
+  const { errors, isValid } = validateRegisterInput(req.body);
 
   //Check the validation
   if (!isValid) {
@@ -51,3 +51,61 @@ router.post('/register', (req, res) => {
     });
   });
 });
+
+// @route POST api/users/login
+// @desc Login the user and return JWT token
+// @access Public
+router.post('/login', (req, res) => {
+  //Form Validation
+  const { errors, isValid } = validateLoginInput(req.body);
+
+  // Checking the Validation
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+
+  const email = req.body.email;
+  const password = req.body.password;
+
+  //Find the User by email
+  User.findOne({ email }).then(user => {
+    if (!user) {
+      return res
+        .status(404)
+        .json({ emailNotFound: 'That Email was not found' });
+    }
+
+    //Check the password
+    bcrypt.compare(password, user.password).then(isMatch => {
+      if (isMatch) {
+        //Create JWT Payload
+        const payload = {
+          id: user.id,
+          name: user.name
+        };
+
+        //Sign the token
+        jwt.sign(
+          payload,
+          keys.secretOrKey,
+          {
+            expiresIn: 3600 // 1 hour in seconds
+          },
+          (err, token) => {
+            res.json({
+              success: true,
+              token: 'Bearer' + token
+            });
+          }
+        );
+      } else {
+        return res
+          .status(400)
+          .json({ passwordIncorrect: 'That password is not correct' });
+      }
+    });
+  });
+});
+
+//Exporting to be able to use in other files
+module.exports = router;

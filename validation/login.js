@@ -9,18 +9,18 @@ module.exports = function validateRegisterInput(data) {
 
   //Email (or Username ?) checks
   if (Validator.isEmpty(data.email)) {
-    errors.email = 'You must enter your email'
+    errors.email = 'You must enter your email';
   } else if (!Validator.isEmail(data.email)) {
-    errors.email = 'You must enter a valid email'
-  } 
+    errors.email = 'You must enter a valid email';
+  }
 
   //Password
   if (Validator.isEmpty(data.password)) {
-    errors.password = 'You must enter a password'
+    errors.password = 'You must enter a password';
   }
 
   return {
     errors,
-    isValid: isEmpty(errors);
-  }
+    isValid: isEmpty(errors)
+  };
 };
