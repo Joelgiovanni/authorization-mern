@@ -1,3 +1,5 @@
+//WE ARE RUNNING THE SERVER ON PORT 4000 & REACT ON PORT 3000
+
 const express = require('express');
 const mongoose = require('mongoose');
 
@@ -33,6 +35,6 @@ app.use('/api/users', users);
 
 //Setting up the Port and getting it ready for Heroku as well
 //Process.env.PORT is for Heroku
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 
 app.listen(port, () => console.log(`The server is running on port ${port}`));
